@@ -11,6 +11,37 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        /* 自定义英雄区域背景样式 */
+       .bg-hero-image {
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* 定义文字输入动画 */
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        /* 定义闪烁光标动画 */
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: currentColor; }
+        }
+
+        /* 应用动画到标题 */
+       .typing-effect {
+            overflow: hidden; /* 隐藏溢出内容 */
+            border-right: .15em solid orange; /* 模拟光标 */
+            white-space: nowrap; /* 防止文字换行 */
+            margin: 0 auto; /* 居中 */
+            letter-spacing: .15em; /* 增加字母间距 */
+            animation:
+                typing 3.5s steps(40, end),
+                blink-caret .75s step-end infinite;
+        }
     </style>
 </head>
 
@@ -18,31 +49,31 @@
     <!-- 导航栏 -->
     <nav class="bg-white shadow-md">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-gray-800">我的主页</h1>
+            <h1 class="text-2xl font-bold text-gray-800">刘明方</h1>
             <ul class="flex space-x-4">
-                <li><a href="#" class="text-gray-600 hover:text-gray-800">首页</a></li>
-                <li><a href="#" class="text-gray-600 hover:text-gray-800">关于我</a></li>
-                <li><a href="#" class="text-gray-600 hover:text-gray-800">作品</a></li>
-                <li><a href="#" class="text-gray-600 hover:text-gray-800">联系我</a></li>
+                <li><a href="#shouye" class="text-gray-600 hover:text-gray-800">首页</a></li>
+                <li><a href="#about-me" class="text-gray-600 hover:text-gray-800">关于我</a></li>
+                <li><a href="#zuopin" class="text-gray-600 hover:text-gray-800">作品</a></li>
+                <li><a href="#contact" class="text-gray-600 hover:text-gray-800">联系我</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- 英雄区域 -->
-    <section class="bg-gradient-to-r from-blue-400 to-purple-400 text-white py-20">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold mb-4">欢迎来到我的个人主页</h2>
-            <p class="text-lg mb-8">这里展示了我的一些经历、作品和想法。</p>
-            <a href="#" class="bg-white text-blue-500 py-2 px-4 rounded-md hover:bg-gray-100">了解更多</a>
+    <section id="shouye" class="bg-hero-image text-white py-20 min-h-screen flex items-center">
+        <div class="max-w-full mx-auto px-4 text-center p-2">
+            <h2 class="text-8xl font-bold mb-2 -mt-20 typing-effect">你好，欢迎！</h2>
+            <p class="text-xl mb-8 text-gray-200">这里展示了我的一些经历、作品和想法。</p>
+            <a href="#about-me" class="bg-white text-blue-500 py-2 px-4 rounded-md hover:bg-gray-100">了解更多</a>
         </div>
     </section>
 
     <!-- 关于我 -->
-    <section class="container mx-auto px-4 py-20">
+    <section id="about-me" class="container mx-auto px-4 py-20">
         <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">关于我</h2>
         <div class="flex flex-wrap justify-center items-center">
             <div class="w-full md:w-1/2 mb-8 md:mb-0">
-                <img src="zhipai1.jpg" alt="个人照片" class="mx-auto rounded-md shadow-md">
+                <img src="zhipai.jpg" alt="个人照片" class="mx-auto rounded-md shadow-md">
             </div>
             <div class="w-full md:w-1/2 px-4">
                 <p class="text-gray-600 leading-relaxed mb-4">我是一个对编程充满热情的人，喜欢探索新的技术和解决问题。在过去的几年里，我积累了丰富的开发经验，涉及多个领域。</p>
@@ -52,58 +83,40 @@
     </section>
 
     <!-- 作品展示 -->
-    <section class="bg-gray-200 py-20">
+    <section id="zuopin" class="bg-gray-200 py-20">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">我的作品</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="bg-white rounded-md shadow-md p-6">
-                    <img src="https://picsum.photos/200/200" alt="作品1" class="mb-4 rounded-md">
+                    <a href="your-work1-url.html" target="_blank">
+                        <img src="xiangmu1.png" alt="作品1" class="mb-4 rounded-md">
+                    </a>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">作品1</h3>
-                    <p class="text-gray-600 leading-relaxed">这是我的一个作品，主要实现了一些功能。</p>
+                    <p class="text-gray-600 leading-relaxed">智愈萌友——抑郁症心理疏导宠物</p>
                 </div>
                 <div class="bg-white rounded-md shadow-md p-6">
-                    <img src="https://picsum.photos/200/200" alt="作品2" class="mb-4 rounded-md">
+                    <a href="your-work2-url.html" target="_blank">
+                        <img src="xiangmu2.png" alt="作品2" class="mb-4 rounded-md">
+                    </a>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">作品2</h3>
-                    <p class="text-gray-600 leading-relaxed">这是我的另一个作品，使用了一些新技术。</p>
+                    <p class="text-gray-600 leading-relaxed">一种基于动态注意力引导的多尺度特征融合面部情感识别方法</p>
                 </div>
                 <div class="bg-white rounded-md shadow-md p-6">
-                    <img src="https://picsum.photos/200/200" alt="作品3" class="mb-4 rounded-md">
+                    <a href="your-work3-url.html" target="_blank">
+                        <img src="xiangmu3.png" alt="作品3" class="mb-4 rounded-md">
+                        <img src="xiangmu3-1.jpg" alt="作品3" class="mb-4 rounded-md">
+                    </a>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">作品3</h3>
-                    <p class="text-gray-600 leading-relaxed">这是一个有趣的项目，具有独特的设计。</p>
+                    <p class="text-gray-600 leading-relaxed">凝眸——基于云边协同的输电线路覆冰检测系统</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 联系我 -->
-    <section class="container mx-auto px-4 py-20">
-        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">联系我</h2>
-        <form class="max-w-md mx-auto">
-            <div class="mb-4">
-                <label for="name" class="block text-gray-700 font-bold mb-2">姓名</label>
-                <input type="text" id="name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
-            </div>
-            <div class="mb-4">
-                <label for="email" class="block text-gray-700 font-bold mb-2">邮箱</label>
-                <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
-            </div>
-            <div class="mb-4">
-                <label for="message" class="block text-gray-700 font-bold mb-2">留言</label>
-                <textarea id="message" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"></textarea>
-            </div>
-            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">发送</button>
-        </form>
-    </section>
-
     <!-- 页脚 -->
     <footer class="bg-gray-800 text-white py-8">
-        <div class="container mx-auto px-4 text-center">
-            <p>&copy; 2025 我的个人主页。保留所有权利。</p>
-            <ul class="flex justify-center space-x-4 mt-4">
-                <li><a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a></li>
-                <li><a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a></li>
-                <li><a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a></li>
-            </ul>
+        <div id="contact" class="container mx-auto px-4 text-center">
+            <p>邮箱：luminafae@163.com</p>
         </div>
     </footer>
 
