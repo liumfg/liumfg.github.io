@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <title>个人主页</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-800">我的主页</h1>
+            <ul class="flex space-x-4">
+                <li><a href="#" class="text-gray-600 hover:text-gray-800">首页</a></li>
+                <li><a href="#" class="text-gray-600 hover:text-gray-800">关于我</a></li>
+                <li><a href="#" class="text-gray-600 hover:text-gray-800">作品</a></li>
+                <li><a href="#" class="text-gray-600 hover:text-gray-800">联系我</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="bg-gradient-to-r from-blue-400 to-purple-400 text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-4">欢迎来到我的个人主页</h2>
+            <p class="text-lg mb-8">这里展示了我的一些经历、作品和想法。</p>
+            <a href="#" class="bg-white text-blue-500 py-2 px-4 rounded-md hover:bg-gray-100">了解更多</a>
+        </div>
+    </section>
+
+    <!-- 关于我 -->
+    <section class="container mx-auto px-4 py-20">
+        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">关于我</h2>
+        <div class="flex flex-wrap justify-center items-center">
+            <div class="w-full md:w-1/2 mb-8 md:mb-0">
+                <img src="zhipai1.jpg" alt="个人照片" class="mx-auto rounded-md shadow-md">
+            </div>
+            <div class="w-full md:w-1/2 px-4">
+                <p class="text-gray-600 leading-relaxed mb-4">我是一个对编程充满热情的人，喜欢探索新的技术和解决问题。在过去的几年里，我积累了丰富的开发经验，涉及多个领域。</p>
+                <p class="text-gray-600 leading-relaxed">我相信不断学习和实践是提升自己的关键，所以我一直在努力学习新的知识和技能。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 作品展示 -->
+    <section class="bg-gray-200 py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">我的作品</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-md shadow-md p-6">
+                    <img src="https://picsum.photos/200/200" alt="作品1" class="mb-4 rounded-md">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">作品1</h3>
+                    <p class="text-gray-600 leading-relaxed">这是我的一个作品，主要实现了一些功能。</p>
+                </div>
+                <div class="bg-white rounded-md shadow-md p-6">
+                    <img src="https://picsum.photos/200/200" alt="作品2" class="mb-4 rounded-md">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">作品2</h3>
+                    <p class="text-gray-600 leading-relaxed">这是我的另一个作品，使用了一些新技术。</p>
+                </div>
+                <div class="bg-white rounded-md shadow-md p-6">
+                    <img src="https://picsum.photos/200/200" alt="作品3" class="mb-4 rounded-md">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">作品3</h3>
+                    <p class="text-gray-600 leading-relaxed">这是一个有趣的项目，具有独特的设计。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我 -->
+    <section class="container mx-auto px-4 py-20">
+        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">联系我</h2>
+        <form class="max-w-md mx-auto">
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700 font-bold mb-2">姓名</label>
+                <input type="text" id="name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 font-bold mb-2">邮箱</label>
+                <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="message" class="block text-gray-700 font-bold mb-2">留言</label>
+                <textarea id="message" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"></textarea>
+            </div>
+            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">发送</button>
+        </form>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 我的个人主页。保留所有权利。</p>
+            <ul class="flex justify-center space-x-4 mt-4">
+                <li><a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a></li>
+                <li><a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a></li>
+                <li><a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        // 这里可以添加更多的 JavaScript 交互代码
+    </script>
+</body>
+
+</html>
