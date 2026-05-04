@@ -100,38 +100,6 @@
             opacity: 0.48;
         }
 
-        .house-title {
-            position: absolute;
-            z-index: 2;
-            left: clamp(18px, 5vw, 72px);
-            bottom: clamp(28px, 7vw, 84px);
-            max-width: min(520px, calc(100% - 36px));
-            color: #fff9ee;
-            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.38);
-            transition: opacity 450ms ease, transform 450ms ease;
-        }
-
-        .house-stage.is-focused .house-title {
-            opacity: 0;
-            transform: translateY(18px);
-            pointer-events: none;
-        }
-
-        .house-title h1 {
-            margin: 0 0 12px;
-            font-size: clamp(2.6rem, 8vw, 6.5rem);
-            line-height: 0.96;
-            letter-spacing: 0;
-        }
-
-        .house-title p {
-            margin: 0;
-            max-width: 450px;
-            color: rgba(255, 249, 238, 0.82);
-            font-size: clamp(1rem, 2vw, 1.2rem);
-            line-height: 1.75;
-        }
-
         .door-hotspot {
             position: absolute;
             z-index: 4;
@@ -537,10 +505,6 @@
             <div class="house-shade" aria-hidden="true"></div>
             <div class="door-pulse" aria-hidden="true"></div>
             <button class="door-hotspot" type="button" aria-label="打开房门"></button>
-            <div class="house-title">
-                <h1>刘明方的房间</h1>
-                <p>从门口进入，先看到我的照片墙，再往里走是项目展示房间。</p>
-            </div>
         </section>
 
         <section id="photo-wall" class="photo-wall" aria-label="照片墙">
