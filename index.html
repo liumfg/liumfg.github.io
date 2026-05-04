@@ -235,32 +235,29 @@
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: clamp(14px, 2vw, 24px);
-            align-items: start;
+            align-items: center;
         }
 
         .photo-frame {
             position: relative;
+            min-height: 220px;
             padding: 12px;
             border: 9px solid var(--wood);
             border-radius: 8px;
             background: #fffaf1;
             box-shadow: var(--shadow);
+            transform: rotate(var(--tilt));
             overflow: hidden;
         }
 
-        .photo-frame:nth-child(2) { border-color: var(--blue); }
-        .photo-frame:nth-child(3) { border-color: var(--green); }
-        .photo-frame:nth-child(5) { border-color: #9a6a38; }
-        .photo-frame:nth-child(7) { border-color: #6e5876; }
-        .photo-frame:nth-child(8) { border-color: #5f6b55; }
-
-        .photo-frame.landscape {
-            aspect-ratio: 1.42;
-        }
-
-        .photo-frame.portrait {
-            aspect-ratio: 0.72;
-        }
+        .photo-frame:nth-child(1) { --tilt: -2deg; }
+        .photo-frame:nth-child(2) { --tilt: 1.4deg; border-color: var(--blue); }
+        .photo-frame:nth-child(3) { --tilt: -1.1deg; border-color: var(--green); }
+        .photo-frame:nth-child(4) { --tilt: 2deg; }
+        .photo-frame:nth-child(5) { --tilt: 1deg; border-color: #9a6a38; }
+        .photo-frame:nth-child(6) { --tilt: -1.8deg; }
+        .photo-frame:nth-child(7) { --tilt: 1.7deg; border-color: #6e5876; }
+        .photo-frame:nth-child(8) { --tilt: -0.8deg; border-color: #5f6b55; }
 
         .photo-frame img,
         .frame-placeholder {
@@ -270,6 +267,7 @@
             display: block;
             border-radius: 4px;
             background: #fffdf8;
+            padding: 10px;
         }
 
         .frame-placeholder {
@@ -462,6 +460,7 @@
             }
 
             .photo-frame {
+                min-height: 190px;
                 padding: 8px;
                 border-width: 7px;
             }
@@ -511,28 +510,28 @@
                     <p>这里陈列我的获奖证书、竞赛记录和重要荣誉。</p>
                 </div>
                 <div class="gallery-grid">
-                    <article class="photo-frame landscape">
+                    <article class="photo-frame">
                         <img src="国家奖学金.png" alt="国家奖学金证书">
                     </article>
-                    <article class="photo-frame landscape">
+                    <article class="photo-frame">
                         <img src="一等奖学金.png" alt="一等奖学金证书">
                     </article>
-                    <article class="photo-frame landscape">
+                    <article class="photo-frame">
                         <img src="优秀学生.jpg" alt="优秀学生证书">
                     </article>
-                    <article class="photo-frame landscape">
+                    <article class="photo-frame">
                         <img src="数模省二.jpg" alt="数学建模省二等奖证书">
                     </article>
-                    <article class="photo-frame landscape">
+                    <article class="photo-frame">
                         <img src="美赛.png" alt="美赛证书">
                     </article>
-                    <article class="photo-frame landscape">
+                    <article class="photo-frame">
                         <img src="大创.jpg" alt="大创证书">
                     </article>
-                    <article class="photo-frame landscape">
+                    <article class="photo-frame">
                         <img src="挑战杯.png" alt="挑战杯证书">
                     </article>
-                    <article class="photo-frame portrait">
+                    <article class="photo-frame">
                         <img src="省赛_软件类_C++B组_二等奖_刘明方_1602041313_1765278.jpg" alt="省赛软件类 C++ B 组二等奖证书">
                     </article>
                 </div>
