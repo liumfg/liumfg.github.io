@@ -7,17 +7,17 @@
     <title>刘明方的房间</title>
     <style>
         :root {
-            --ink: #1f2528;
-            --muted: #697174;
-            --cream: #f6efe3;
-            --wall: #efe4d3;
-            --wall-dark: #dcc7ae;
+            --ink: #202528;
+            --muted: #5f696d;
+            --paper: #fff8ed;
+            --wall: #ead9c4;
+            --wall-deep: #d5bea4;
             --wood: #8b5a35;
-            --wood-dark: #5a3522;
-            --green: #61745f;
-            --blue: #3c6e8f;
-            --gold: #c28b3d;
-            --shadow: 0 24px 60px rgba(31, 37, 40, 0.18);
+            --wood-dark: #4b2b1a;
+            --green: #546d57;
+            --blue: #3f687f;
+            --gold: #b47a30;
+            --shadow: 0 24px 58px rgba(37, 27, 18, 0.2);
         }
 
         * {
@@ -30,567 +30,493 @@
 
         body {
             margin: 0;
-            min-height: 100vh;
             color: var(--ink);
             font-family: "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-            background: #171c1f;
+            background: #151b18;
         }
 
-        button,
-        a {
+        a,
+        button {
             font: inherit;
         }
 
-        .door-scene,
-        .room-scene {
-            min-height: 100vh;
+        .house-stage {
             position: relative;
+            min-height: 100vh;
+            overflow: hidden;
+            background: #111815;
+            cursor: zoom-in;
+        }
+
+        .house-image,
+        .open-door-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .house-image {
+            object-position: center center;
+            transform: scale(1);
+            transition: transform 900ms cubic-bezier(.2, .76, .2, 1), object-position 900ms cubic-bezier(.2, .76, .2, 1), filter 500ms ease;
+        }
+
+        .house-stage.is-focused {
+            cursor: pointer;
+        }
+
+        .house-stage.is-focused .house-image {
+            object-position: 50% 66%;
+            transform: scale(2.45);
+            filter: saturate(1.04) contrast(1.03);
+        }
+
+        .open-door-image {
+            z-index: 3;
+            opacity: 0;
+            pointer-events: none;
+            object-position: center center;
+            transform: scale(1.03);
+            transition: opacity 180ms ease;
+        }
+
+        .house-stage.is-opening .open-door-image {
+            opacity: 1;
+        }
+
+        .house-shade {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background:
+                radial-gradient(circle at 50% 64%, transparent 0 16%, rgba(0, 0, 0, 0.24) 45%, rgba(0, 0, 0, 0.52) 100%),
+                linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.34));
+            transition: opacity 600ms ease;
+        }
+
+        .house-stage.is-focused .house-shade {
+            opacity: 0.48;
+        }
+
+        .house-title {
+            position: absolute;
+            z-index: 2;
+            left: clamp(18px, 5vw, 72px);
+            bottom: clamp(28px, 7vw, 84px);
+            max-width: min(520px, calc(100% - 36px));
+            color: #fff9ee;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.38);
+            transition: opacity 450ms ease, transform 450ms ease;
+        }
+
+        .house-stage.is-focused .house-title {
+            opacity: 0;
+            transform: translateY(18px);
+            pointer-events: none;
+        }
+
+        .house-title h1 {
+            margin: 0 0 12px;
+            font-size: clamp(2.6rem, 8vw, 6.5rem);
+            line-height: 0.96;
+            letter-spacing: 0;
+        }
+
+        .house-title p {
+            margin: 0;
+            max-width: 450px;
+            color: rgba(255, 249, 238, 0.82);
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            line-height: 1.75;
+        }
+
+        .door-hotspot {
+            position: absolute;
+            z-index: 4;
+            left: 43%;
+            top: 51%;
+            width: 14%;
+            height: 21%;
+            border: 0;
+            border-radius: 999px 999px 8px 8px;
+            background: transparent;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .house-stage.is-focused .door-hotspot {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .door-pulse {
+            position: absolute;
+            z-index: 2;
+            left: 50%;
+            top: 65%;
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            translate: -50% -50%;
+            border: 1px solid rgba(255, 248, 226, 0.85);
+            box-shadow: 0 0 0 0 rgba(255, 248, 226, 0.34);
+            opacity: 0;
+            pointer-events: none;
+            animation: pulse 1.45s ease-out infinite;
+        }
+
+        .house-stage.is-focused .door-pulse {
+            opacity: 1;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.72);
+                box-shadow: 0 0 0 0 rgba(255, 248, 226, 0.36);
+            }
+
+            100% {
+                transform: scale(1.2);
+                box-shadow: 0 0 0 24px rgba(255, 248, 226, 0);
+            }
+        }
+
+        .top-nav {
+            position: fixed;
+            z-index: 20;
+            top: 18px;
+            left: 50%;
+            display: flex;
+            gap: 8px;
+            padding: 7px;
+            border-radius: 999px;
+            background: rgba(22, 28, 25, 0.58);
+            backdrop-filter: blur(14px);
+            transform: translateX(-50%);
+        }
+
+        .top-nav a {
+            min-height: 36px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            color: #fff8ea;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .photo-wall,
+        .project-room {
+            position: relative;
+            min-height: 100vh;
             overflow: hidden;
         }
 
-        .door-scene {
+        .photo-wall {
             display: grid;
             place-items: center;
-            padding: 32px;
+            padding: 90px 24px 70px;
             background:
-                radial-gradient(circle at 50% 16%, rgba(255, 238, 192, 0.32), transparent 24%),
-                linear-gradient(180deg, #27323a 0%, #1a2025 58%, #111518 100%);
+                linear-gradient(180deg, rgba(255, 255, 255, 0.32), transparent 34%),
+                linear-gradient(160deg, #efe2d0 0 70%, #b98052 70% 100%);
         }
 
-        .door-scene::before {
+        .photo-wall::before,
+        .project-room::before {
             content: "";
             position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(180deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-            background-size: 72px 72px;
-            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.85), transparent 88%);
-        }
-
-        .entry {
-            position: relative;
-            z-index: 1;
-            width: min(880px, 100%);
-            display: grid;
-            grid-template-columns: minmax(240px, 360px) 1fr;
-            gap: clamp(28px, 6vw, 70px);
-            align-items: center;
-        }
-
-        .door-wrap {
-            position: relative;
-            height: min(72vh, 580px);
-            min-height: 430px;
-            display: grid;
-            place-items: end center;
-            perspective: 1100px;
-        }
-
-        .door-frame {
-            width: 78%;
-            height: 88%;
-            padding: 18px;
-            border-radius: 12px 12px 4px 4px;
-            background: linear-gradient(90deg, #422719, #855635 18%, #4f2e1d 100%);
-            box-shadow: var(--shadow);
-        }
-
-        .door-button {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            border: 0;
-            cursor: pointer;
-            color: #fdf6ea;
-            text-align: left;
-            border-radius: 7px 7px 2px 2px;
+            left: -8%;
+            right: -8%;
+            bottom: -2%;
+            height: 30%;
             background:
-                linear-gradient(90deg, rgba(255, 255, 255, 0.12), transparent 22%, rgba(0, 0, 0, 0.18) 100%),
-                repeating-linear-gradient(90deg, #8a552d 0 18%, #744420 18% 20%, #9a6237 20% 38%);
-            box-shadow: inset 0 0 0 7px rgba(64, 37, 22, 0.75);
-            transform-origin: left center;
-            transition: transform 720ms cubic-bezier(.2, .78, .22, 1), filter 300ms ease;
-        }
-
-        .door-button:hover,
-        .door-button:focus-visible {
-            transform: rotateY(-10deg);
-            filter: brightness(1.08);
-            outline: none;
-        }
-
-        .door-panel {
-            position: absolute;
-            inset: 15% 17%;
-            border: 3px solid rgba(69, 38, 20, 0.72);
-            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.1);
-        }
-
-        .door-knob {
-            position: absolute;
-            right: 18%;
-            top: 52%;
-            width: 22px;
-            aspect-ratio: 1;
-            border-radius: 50%;
-            background: radial-gradient(circle at 35% 32%, #fff2ba, var(--gold) 54%, #6b421b);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-        }
-
-        .door-label {
-            position: absolute;
-            left: 50%;
-            top: 24%;
-            translate: -50% 0;
-            width: 58%;
-            padding: 12px 14px;
-            border-radius: 6px;
-            text-align: center;
-            letter-spacing: 0;
-            color: #4d311e;
-            background: rgba(253, 246, 234, 0.86);
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
-        }
-
-        .entry-copy {
-            color: #f8efe1;
-        }
-
-        .entry-copy h1 {
-            margin: 0 0 16px;
-            font-size: clamp(2.4rem, 7vw, 5.8rem);
-            line-height: 0.98;
-            letter-spacing: 0;
-        }
-
-        .entry-copy p {
-            max-width: 520px;
-            margin: 0 0 26px;
-            color: rgba(248, 239, 225, 0.78);
-            font-size: clamp(1rem, 2vw, 1.22rem);
-            line-height: 1.8;
-        }
-
-        .enter-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            min-height: 44px;
-            padding: 11px 18px;
-            border: 1px solid rgba(255, 255, 255, 0.38);
-            border-radius: 999px;
-            color: #fff6e8;
-            text-decoration: none;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-        }
-
-        .room-scene {
-            background:
-                linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 42%),
-                linear-gradient(160deg, var(--wall) 0 62%, var(--wall-dark) 62% 63%, #9b6a43 63% 100%);
-        }
-
-        .room-scene::before {
-            content: "";
-            position: absolute;
-            left: -10%;
-            right: -10%;
-            bottom: 0;
-            height: 34%;
-            background:
-                repeating-linear-gradient(96deg, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 72px),
-                linear-gradient(180deg, #b98053, #78492c);
+                repeating-linear-gradient(96deg, rgba(255, 255, 255, 0.11) 0 2px, transparent 2px 72px),
+                linear-gradient(180deg, #b87b4f, #744629);
             transform: skewY(-2deg);
             transform-origin: bottom left;
         }
 
-        .room-inner {
+        .wall-inner {
             position: relative;
             z-index: 1;
-            width: min(1180px, calc(100% - 32px));
-            min-height: 100vh;
-            margin: 0 auto;
-            padding: 28px 0 52px;
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            gap: 24px;
+            width: min(1160px, 100%);
         }
 
-        .room-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 18px;
-            padding: 12px 0;
+        .section-head {
+            max-width: 760px;
+            margin: 0 auto 34px;
+            text-align: center;
         }
 
-        .brand {
-            font-size: 1.2rem;
-            font-weight: 800;
-        }
-
-        .room-nav a {
-            color: var(--ink);
-            text-decoration: none;
-            margin-left: 18px;
-            font-size: 0.95rem;
-        }
-
-        .wall-area {
-            display: grid;
-            grid-template-columns: 0.9fr 1.35fr;
-            gap: clamp(28px, 5vw, 60px);
-            align-items: end;
-        }
-
-        .desk-zone {
-            min-height: 560px;
-            display: grid;
-            align-content: end;
-        }
-
-        .window {
-            width: min(280px, 80%);
-            aspect-ratio: 1.32;
-            margin: 0 auto 30px;
-            border: 12px solid #fff8ec;
-            border-radius: 6px;
-            background:
-                linear-gradient(90deg, transparent 48%, rgba(255, 255, 255, 0.9) 48% 52%, transparent 52%),
-                linear-gradient(180deg, transparent 48%, rgba(255, 255, 255, 0.9) 48% 52%, transparent 52%),
-                url("bg.jpg") center / cover;
-            box-shadow: 0 18px 35px rgba(86, 62, 42, 0.2);
-        }
-
-        .desk {
-            position: relative;
-            padding: 34px 22px 28px;
-            border-radius: 10px 10px 2px 2px;
-            background:
-                linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 32%),
-                linear-gradient(90deg, #754424, #a56b3c 28%, #7a4729 100%);
-            box-shadow: 0 22px 34px rgba(73, 45, 27, 0.28);
-        }
-
-        .desk::before {
-            content: "";
-            position: absolute;
-            left: -18px;
-            right: -18px;
-            top: -18px;
-            height: 34px;
-            border-radius: 8px;
-            background: linear-gradient(90deg, #5b311c, #b87943 38%, #6f3d22);
-            box-shadow: 0 12px 24px rgba(65, 38, 23, 0.24);
-        }
-
-        .project-stack {
-            display: grid;
-            gap: 14px;
-        }
-
-        .project-card {
-            display: grid;
-            grid-template-columns: 86px 1fr;
-            gap: 14px;
-            align-items: center;
-            min-height: 116px;
-            padding: 12px;
-            border-radius: 8px;
-            color: var(--ink);
-            text-decoration: none;
-            background: rgba(255, 250, 240, 0.9);
-            box-shadow: 0 10px 18px rgba(59, 36, 22, 0.18);
-            transition: transform 220ms ease, box-shadow 220ms ease;
-        }
-
-        .project-card:hover {
-            transform: translateY(-4px) rotate(-0.5deg);
-            box-shadow: 0 16px 26px rgba(59, 36, 22, 0.24);
-        }
-
-        .project-card img {
-            width: 86px;
-            height: 86px;
-            object-fit: cover;
-            border-radius: 7px;
-            background: #fff;
-        }
-
-        .project-card strong {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 1rem;
-        }
-
-        .project-card span {
-            display: block;
-            color: var(--muted);
-            font-size: 0.9rem;
-            line-height: 1.45;
-        }
-
-        .gallery-zone {
-            align-self: stretch;
-            display: grid;
-            grid-template-rows: auto 1fr;
-            gap: 18px;
-            min-height: 610px;
-        }
-
-        .profile-note {
-            width: min(620px, 100%);
-            padding: 18px 20px;
-            border-left: 5px solid var(--green);
-            background: rgba(255, 250, 240, 0.72);
-            box-shadow: 0 14px 30px rgba(93, 72, 48, 0.12);
-        }
-
-        .profile-note h2 {
-            margin: 0 0 8px;
-            font-size: clamp(1.55rem, 3vw, 2.4rem);
+        .section-head h2 {
+            margin: 0 0 10px;
+            font-size: clamp(2rem, 5vw, 4rem);
+            line-height: 1;
             letter-spacing: 0;
         }
 
-        .profile-note p {
+        .section-head p {
             margin: 0;
-            color: #4f585a;
-            line-height: 1.75;
+            color: var(--muted);
+            line-height: 1.8;
         }
 
-        .certificate-wall {
-            position: relative;
-            min-height: 430px;
-            border-radius: 4px;
-        }
-
-        .shelf {
-            position: absolute;
-            left: 2%;
-            right: 4%;
-            bottom: 4%;
-            height: 16px;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #6d4329, #b17646 45%, #704129);
-            box-shadow: 0 12px 24px rgba(70, 43, 26, 0.22);
-        }
-
-        .frame {
-            position: absolute;
+        .gallery-grid {
             display: grid;
-            place-items: center;
-            padding: 10px;
-            border: 8px solid #7a5135;
-            border-radius: 6px;
-            background: #fffaf0;
-            box-shadow: 0 18px 28px rgba(78, 58, 39, 0.2);
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: clamp(14px, 2vw, 24px);
+            align-items: center;
+        }
+
+        .photo-frame {
+            position: relative;
+            min-height: 220px;
+            padding: 12px;
+            border: 9px solid var(--wood);
+            border-radius: 8px;
+            background: #fffaf1;
+            box-shadow: var(--shadow);
             transform: rotate(var(--tilt));
         }
 
-        .frame img,
+        .photo-frame:nth-child(1) { --tilt: -2deg; }
+        .photo-frame:nth-child(2) { --tilt: 1.4deg; border-color: var(--blue); }
+        .photo-frame:nth-child(3) { --tilt: -1.1deg; border-color: var(--green); }
+        .photo-frame:nth-child(4) { --tilt: 2deg; }
+        .photo-frame:nth-child(5) { --tilt: 1deg; border-color: #9a6a38; }
+        .photo-frame:nth-child(6) { --tilt: -1.8deg; }
+        .photo-frame:nth-child(7) { --tilt: 1.7deg; border-color: #6e5876; }
+        .photo-frame:nth-child(8) { --tilt: -0.8deg; border-color: #5f6b55; }
+
+        .photo-frame.tall {
+            min-height: 300px;
+        }
+
+        .photo-frame img,
         .frame-placeholder {
             width: 100%;
             height: 100%;
+            min-height: inherit;
             object-fit: cover;
-            border-radius: 3px;
-            background: linear-gradient(135deg, #fffdf8, #e7d7bd);
+            display: block;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #fffef9, #e7d7bd);
         }
 
         .frame-placeholder {
             display: grid;
             place-items: center;
-            padding: 14px;
+            padding: 18px;
             text-align: center;
-            color: #78614b;
-            line-height: 1.5;
-            font-size: 0.92rem;
+            color: #7a6149;
+            line-height: 1.55;
         }
 
-        .frame:nth-child(1) {
-            --tilt: -2.5deg;
-            left: 2%;
-            top: 7%;
-            width: 30%;
-            height: 34%;
+        .project-room {
+            padding: 92px 24px 70px;
+            background:
+                radial-gradient(circle at 18% 18%, rgba(255, 249, 232, 0.7), transparent 24%),
+                linear-gradient(180deg, #e8dac8 0 68%, #af7650 68% 100%);
         }
 
-        .frame:nth-child(2) {
-            --tilt: 1.8deg;
-            left: 37%;
-            top: 3%;
-            width: 25%;
-            height: 28%;
-            border-color: #476278;
+        .project-inner {
+            position: relative;
+            z-index: 1;
+            width: min(1120px, 100%);
+            min-height: calc(100vh - 162px);
+            margin: 0 auto;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 34px;
         }
 
-        .frame:nth-child(3) {
-            --tilt: -1deg;
-            right: 4%;
-            top: 11%;
-            width: 28%;
-            height: 37%;
-            border-color: #6a6f4d;
+        .easel-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(260px, 1fr));
+            gap: clamp(28px, 6vw, 76px);
+            align-items: end;
         }
 
-        .frame:nth-child(4) {
-            --tilt: 2.2deg;
-            left: 17%;
-            top: 50%;
-            width: 27%;
-            height: 30%;
-            border-color: #9a6a38;
+        .easel-link {
+            position: relative;
+            display: grid;
+            justify-items: center;
+            color: var(--ink);
+            text-decoration: none;
+            transition: transform 220ms ease;
         }
 
-        .frame:nth-child(5) {
-            --tilt: -1.8deg;
-            right: 18%;
-            top: 52%;
-            width: 31%;
-            height: 32%;
+        .easel-link:hover {
+            transform: translateY(-8px);
         }
 
-        .photo-pin {
-            position: absolute;
-            right: 0;
-            bottom: 10%;
-            width: 185px;
-            padding: 10px;
-            border-radius: 7px;
-            background: #fffaf0;
-            box-shadow: 0 16px 28px rgba(72, 48, 30, 0.22);
-            transform: rotate(2deg);
+        .canvas {
+            position: relative;
+            z-index: 2;
+            width: min(430px, 100%);
+            min-height: 390px;
+            padding: 18px;
+            border: 12px solid #7b4b2f;
+            border-radius: 8px;
+            background: #fffaf1;
+            box-shadow: var(--shadow);
         }
 
-        .photo-pin img {
+        .canvas img {
             width: 100%;
+            height: 250px;
+            object-fit: cover;
             display: block;
-            border-radius: 4px;
+            border-radius: 5px;
+            background: #fff;
+        }
+
+        .canvas strong {
+            display: block;
+            margin: 18px 0 8px;
+            font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+        }
+
+        .canvas span {
+            display: block;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .easel-legs {
+            position: relative;
+            z-index: 1;
+            width: min(390px, 88%);
+            height: 210px;
+            margin-top: -20px;
+        }
+
+        .easel-legs::before,
+        .easel-legs::after,
+        .back-leg {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 14px;
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #8b5a35, #4b2b1a);
+            transform-origin: top center;
+        }
+
+        .easel-legs::before {
+            left: 25%;
+            transform: rotate(11deg);
+        }
+
+        .easel-legs::after {
+            right: 25%;
+            transform: rotate(-11deg);
+        }
+
+        .back-leg {
+            left: 50%;
+            height: 92%;
+            transform: translateX(-50%) rotate(2deg);
+            opacity: 0.82;
+        }
+
+        .rail {
+            position: absolute;
+            left: 18%;
+            right: 18%;
+            top: 46px;
+            height: 12px;
+            border-radius: 999px;
+            background: #5a3522;
         }
 
         .contact-strip {
+            position: relative;
+            z-index: 1;
+            width: min(1120px, calc(100% - 48px));
+            margin: 26px auto 0;
             display: flex;
             justify-content: space-between;
-            align-items: center;
             gap: 16px;
             padding: 16px 18px;
             border-radius: 8px;
-            color: #f9efe0;
+            color: #fff7e7;
             background: rgba(31, 37, 40, 0.88);
             box-shadow: 0 18px 36px rgba(31, 37, 40, 0.2);
         }
 
         .contact-strip a {
-            color: #f9efe0;
+            color: #fff7e7;
         }
 
-        @media (max-width: 860px) {
-            .entry,
-            .wall-area {
+        @media (max-width: 900px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .easel-row {
                 grid-template-columns: 1fr;
             }
 
-            .entry-copy {
-                text-align: center;
-            }
-
-            .entry-copy p {
-                margin-inline: auto;
-            }
-
-            .room-nav {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .room-nav a {
-                display: inline-block;
-                margin: 0 14px 8px 0;
-            }
-
-            .desk-zone,
-            .gallery-zone {
+            .project-inner {
                 min-height: auto;
-            }
-
-            .certificate-wall {
-                min-height: 540px;
-            }
-
-            .photo-pin {
-                width: 150px;
-                right: 5%;
             }
         }
 
         @media (max-width: 560px) {
-            .door-scene {
-                padding: 20px;
+            .top-nav {
+                top: 10px;
+                width: calc(100% - 20px);
+                justify-content: center;
             }
 
-            .door-wrap {
-                min-height: 360px;
-                height: 52vh;
+            .top-nav a {
+                padding: 8px 10px;
+                font-size: 0.88rem;
             }
 
-            .room-inner {
-                width: min(100% - 22px, 1180px);
-                padding-top: 18px;
+            .house-stage.is-focused .house-image {
+                object-position: 50% 64%;
+                transform: scale(2.85);
             }
 
-            .project-card {
-                grid-template-columns: 72px 1fr;
+            .door-hotspot {
+                left: 39%;
+                top: 48%;
+                width: 22%;
+                height: 28%;
             }
 
-            .project-card img {
-                width: 72px;
-                height: 72px;
+            .gallery-grid {
+                gap: 14px;
             }
 
-            .certificate-wall {
-                min-height: 620px;
+            .photo-frame,
+            .photo-frame.tall {
+                min-height: 190px;
+                padding: 8px;
+                border-width: 7px;
             }
 
-            .frame:nth-child(n) {
-                left: auto;
-                right: auto;
-                width: 44%;
-                height: 22%;
+            .photo-wall,
+            .project-room {
+                padding-inline: 14px;
             }
 
-            .frame:nth-child(1) {
-                left: 1%;
-                top: 2%;
+            .canvas {
+                min-height: 350px;
+                padding: 14px;
             }
 
-            .frame:nth-child(2) {
-                right: 1%;
-                top: 8%;
-            }
-
-            .frame:nth-child(3) {
-                left: 5%;
-                top: 30%;
-            }
-
-            .frame:nth-child(4) {
-                right: 3%;
-                top: 37%;
-            }
-
-            .frame:nth-child(5) {
-                left: 24%;
-                top: 60%;
-            }
-
-            .photo-pin {
-                width: 132px;
-                bottom: 2%;
+            .canvas img {
+                height: 210px;
             }
 
             .contact-strip {
-                align-items: flex-start;
+                width: calc(100% - 28px);
                 flex-direction: column;
             }
         }
@@ -598,113 +524,122 @@
 </head>
 
 <body>
+    <nav class="top-nav" aria-label="页面导航">
+        <a href="#house">入口</a>
+        <a href="#photo-wall">照片墙</a>
+        <a href="#projects">项目</a>
+    </nav>
+
     <main>
-        <section id="door" class="door-scene" aria-label="主页入口">
-            <div class="entry">
-                <div class="door-wrap">
-                    <div class="door-frame">
-                        <button class="door-button" type="button" aria-label="进入刘明方的房间">
-                            <span class="door-panel"></span>
-                            <span class="door-label">刘明方的房间</span>
-                            <span class="door-knob"></span>
-                        </button>
-                    </div>
+        <section id="house" class="house-stage" aria-label="房子入口">
+            <img class="house-image" src="房子.jpg" alt="林间小屋入口">
+            <img class="open-door-image" src="开门.png" alt="打开门后的房子入口">
+            <div class="house-shade" aria-hidden="true"></div>
+            <div class="door-pulse" aria-hidden="true"></div>
+            <button class="door-hotspot" type="button" aria-label="打开房门"></button>
+            <div class="house-title">
+                <h1>刘明方的房间</h1>
+                <p>从门口进入，先看到我的照片墙，再往里走是项目展示房间。</p>
+            </div>
+        </section>
+
+        <section id="photo-wall" class="photo-wall" aria-label="照片墙">
+            <div class="wall-inner">
+                <div class="section-head">
+                    <h2>照片墙</h2>
+                    <p>这里预留 8 个相框，后续可以直接替换成你的获奖证书、竞赛记录和重要照片。</p>
                 </div>
-                <div class="entry-copy">
-                    <h1>你好，欢迎。</h1>
-                    <p>这是一间用来陈列经历、证书和项目的小房间。推开门后，可以在墙上看见荣誉记录，在桌上翻看我的作品。</p>
-                    <a class="enter-link" href="#room">进入房间</a>
+                <div class="gallery-grid">
+                    <article class="photo-frame tall">
+                        <img src="zhipai.jpg" alt="照片墙图片 1">
+                    </article>
+                    <article class="photo-frame">
+                        <img src="zhipai1.jpg" alt="照片墙图片 2">
+                    </article>
+                    <article class="photo-frame tall">
+                        <div class="frame-placeholder">证书照片 03</div>
+                    </article>
+                    <article class="photo-frame">
+                        <div class="frame-placeholder">证书照片 04</div>
+                    </article>
+                    <article class="photo-frame">
+                        <div class="frame-placeholder">证书照片 05</div>
+                    </article>
+                    <article class="photo-frame tall">
+                        <div class="frame-placeholder">证书照片 06</div>
+                    </article>
+                    <article class="photo-frame">
+                        <div class="frame-placeholder">证书照片 07</div>
+                    </article>
+                    <article class="photo-frame tall">
+                        <div class="frame-placeholder">证书照片 08</div>
+                    </article>
                 </div>
             </div>
         </section>
 
-        <section id="room" class="room-scene" aria-label="个人主页房间">
-            <div class="room-inner">
-                <nav class="room-nav" aria-label="房间导航">
-                    <div class="brand">刘明方</div>
-                    <div>
-                        <a href="#certificates">照片墙</a>
-                        <a href="#projects">项目桌</a>
-                        <a href="#contact">联系我</a>
-                    </div>
-                </nav>
-
-                <div class="wall-area">
-                    <aside id="projects" class="desk-zone" aria-label="项目桌">
-                        <div class="window" aria-hidden="true"></div>
-                        <div class="desk">
-                            <div class="project-stack">
-                                <a class="project-card" href="#" aria-label="查看智愈萌友项目">
-                                    <img src="xiangmu1.png" alt="智愈萌友项目图片">
-                                    <span>
-                                        <strong>智愈萌友</strong>
-                                        <span>抑郁症心理疏导宠物，通过模型微调探索不同方案的实际差异。</span>
-                                    </span>
-                                </a>
-                                <a class="project-card" href="#" aria-label="查看面部情感识别项目">
-                                    <img src="xiangmu2.png" alt="面部情感识别项目图片">
-                                    <span>
-                                        <strong>面部情感识别</strong>
-                                        <span>基于动态注意力引导的多尺度特征融合方法。</span>
-                                    </span>
-                                </a>
-                                <a class="project-card" href="#" aria-label="查看凝眸项目">
-                                    <img src="xiangmu3.png" alt="凝眸项目图片">
-                                    <span>
-                                        <strong>凝眸</strong>
-                                        <span>基于云边协同的输电线路覆冰检测系统。</span>
-                                    </span>
-                                </a>
-                            </div>
-                        </div>
-                    </aside>
-
-                    <section class="gallery-zone" aria-label="照片墙和个人介绍">
-                        <div class="profile-note">
-                            <h2>关于我</h2>
-                            <p>上海师范大学 2022 级人工智能专业。喜欢把理论放进实践里验证，也持续探索专注、深度工作和自我成长。欲渡关山，何惧狂澜，风生水起，正好扬帆。</p>
-                        </div>
-
-                        <div id="certificates" class="certificate-wall">
-                            <article class="frame">
-                                <div class="frame-placeholder">证书照片 01<br>替换为你的获奖证书</div>
-                            </article>
-                            <article class="frame">
-                                <div class="frame-placeholder">证书照片 02<br>可以放竞赛、奖项或荣誉</div>
-                            </article>
-                            <article class="frame">
-                                <div class="frame-placeholder">证书照片 03<br>建议使用横向或竖向清晰图</div>
-                            </article>
-                            <article class="frame">
-                                <div class="frame-placeholder">证书照片 04<br>后续可继续增加相框</div>
-                            </article>
-                            <article class="frame">
-                                <div class="frame-placeholder">证书照片 05<br>统一放在墙面区域</div>
-                            </article>
-                            <div class="photo-pin">
-                                <img src="zhipai.jpg" alt="个人照片">
-                            </div>
-                            <div class="shelf" aria-hidden="true"></div>
-                        </div>
-                    </section>
+        <section id="projects" class="project-room" aria-label="项目展示房间">
+            <div class="project-inner">
+                <div class="section-head">
+                    <h2>项目展示</h2>
+                    <p>两个立式画架分别展示项目图片，点击画布即可进入对应 GitHub 仓库。</p>
                 </div>
 
-                <footer id="contact" class="contact-strip">
-                    <span>邮箱：<a href="mailto:liumfang0113@gmail.com">liumfang0113@gmail.com</a></span>
-                    <span>欢迎来到我的个人主页。</span>
-                </footer>
+                <div class="easel-row">
+                    <a class="easel-link" href="https://github.com/liumfg/taidi" target="_blank" rel="noopener noreferrer" aria-label="打开 taidi 项目">
+                        <div class="canvas">
+                            <img src="xiangmu2.png" alt="taidi 项目图片">
+                            <strong>taidi</strong>
+                            <span>竞赛与算法项目展示，点击进入 GitHub 仓库查看代码与说明。</span>
+                        </div>
+                        <div class="easel-legs" aria-hidden="true">
+                            <span class="back-leg"></span>
+                            <span class="rail"></span>
+                        </div>
+                    </a>
+
+                    <a class="easel-link" href="https://github.com/liumfg/LifePilot" target="_blank" rel="noopener noreferrer" aria-label="打开 LifePilot 项目">
+                        <div class="canvas">
+                            <img src="xiangmu1.png" alt="LifePilot 项目图片">
+                            <strong>LifePilot</strong>
+                            <span>个人效率与生活管理方向项目，点击进入 GitHub 仓库查看代码与说明。</span>
+                        </div>
+                        <div class="easel-legs" aria-hidden="true">
+                            <span class="back-leg"></span>
+                            <span class="rail"></span>
+                        </div>
+                    </a>
+                </div>
             </div>
+
+            <footer class="contact-strip">
+                <span>邮箱：<a href="mailto:liumfang0113@gmail.com">liumfang0113@gmail.com</a></span>
+                <span>欲渡关山，何惧狂澜，风生水起，正好扬帆。</span>
+            </footer>
         </section>
     </main>
 
     <script>
-        const doorButton = document.querySelector(".door-button");
+        const houseStage = document.querySelector(".house-stage");
+        const doorHotspot = document.querySelector(".door-hotspot");
 
-        doorButton.addEventListener("click", () => {
-            doorButton.style.transform = "rotateY(-72deg)";
+        houseStage.addEventListener("click", () => {
+            if (!houseStage.classList.contains("is-focused")) {
+                houseStage.classList.add("is-focused");
+            }
+        });
+
+        doorHotspot.addEventListener("click", (event) => {
+            event.stopPropagation();
+            houseStage.classList.add("is-opening");
+
             window.setTimeout(() => {
-                document.querySelector("#room").scrollIntoView({ behavior: "smooth" });
-            }, 360);
+                document.querySelector("#photo-wall").scrollIntoView({ behavior: "smooth" });
+            }, 520);
+
+            window.setTimeout(() => {
+                houseStage.classList.remove("is-opening");
+            }, 1200);
         });
     </script>
 </body>
