@@ -247,6 +247,7 @@
             background: #fffaf1;
             box-shadow: var(--shadow);
             transform: rotate(var(--tilt));
+            overflow: hidden;
         }
 
         .photo-frame:nth-child(1) { --tilt: -2deg; }
@@ -262,6 +263,15 @@
             min-height: 300px;
         }
 
+        .photo-frame.wide {
+            grid-column: span 2;
+            min-height: 260px;
+        }
+
+        .photo-frame.wide:not(.rotate-cw):not(.rotate-ccw) img {
+            padding: 10px;
+        }
+
         .photo-frame img,
         .frame-placeholder {
             width: 100%;
@@ -271,6 +281,16 @@
             display: block;
             border-radius: 4px;
             background: #fffdf8;
+        }
+
+        .photo-frame.rotate-cw img {
+            transform: rotate(90deg) scale(0.62);
+            transform-origin: center;
+        }
+
+        .photo-frame.rotate-ccw img {
+            transform: rotate(-90deg) scale(0.62);
+            transform-origin: center;
         }
 
         .frame-placeholder {
@@ -469,6 +489,11 @@
                 border-width: 7px;
             }
 
+            .photo-frame.wide {
+                grid-column: span 2;
+                min-height: 180px;
+            }
+
             .photo-wall,
             .project-room {
                 padding-inline: 14px;
@@ -514,26 +539,26 @@
                     <p>这里陈列我的获奖证书、竞赛记录和重要荣誉。</p>
                 </div>
                 <div class="gallery-grid">
-                    <article class="photo-frame tall">
+                    <article class="photo-frame wide">
                         <img src="国家奖学金.png" alt="国家奖学金证书">
                     </article>
-                    <article class="photo-frame">
+                    <article class="photo-frame wide rotate-ccw">
                         <img src="一等奖学金.png" alt="一等奖学金证书">
                     </article>
-                    <article class="photo-frame tall">
+                    <article class="photo-frame wide rotate-cw">
                         <img src="优秀学生.jpg" alt="优秀学生证书">
                     </article>
                     <article class="photo-frame">
-                        <img src="挑战杯.png" alt="挑战杯证书">
+                        <img src="数模省二.jpg" alt="数学建模省二等奖证书">
                     </article>
                     <article class="photo-frame">
                         <img src="美赛.png" alt="美赛证书">
                     </article>
-                    <article class="photo-frame tall">
+                    <article class="photo-frame wide rotate-cw">
                         <img src="大创.jpg" alt="大创证书">
                     </article>
-                    <article class="photo-frame">
-                        <img src="数模省二.jpg" alt="数学建模省二等奖证书">
+                    <article class="photo-frame wide rotate-cw">
+                        <img src="挑战杯.png" alt="挑战杯证书">
                     </article>
                     <article class="photo-frame tall">
                         <img src="省赛_软件类_C++B组_二等奖_刘明方_1602041313_1765278.jpg" alt="省赛软件类 C++ B 组二等奖证书">
