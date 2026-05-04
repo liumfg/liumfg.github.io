@@ -1,129 +1,711 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-    <title>个人主页</title>
+    <title>刘明方的房间</title>
     <style>
+        :root {
+            --ink: #1f2528;
+            --muted: #697174;
+            --cream: #f6efe3;
+            --wall: #efe4d3;
+            --wall-dark: #dcc7ae;
+            --wood: #8b5a35;
+            --wood-dark: #5a3522;
+            --green: #61745f;
+            --blue: #3c6e8f;
+            --gold: #c28b3d;
+            --shadow: 0 24px 60px rgba(31, 37, 40, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* 自定义英雄区域背景样式 */
-       .bg-hero-image {
-            background-image: url('bg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            margin: 0;
+            min-height: 100vh;
+            color: var(--ink);
+            font-family: "Inter", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+            background: #171c1f;
         }
 
-        /* 定义文字输入动画 */
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
+        button,
+        a {
+            font: inherit;
         }
 
-        /* 定义闪烁光标动画 */
-        @keyframes blink-caret {
-            from, to { border-color: transparent; }
-            50% { border-color: currentColor; }
+        .door-scene,
+        .room-scene {
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* 应用动画到标题 */
-       .typing-effect {
-            overflow: hidden; /* 隐藏溢出内容 */
-            border-right: .15em solid orange; /* 模拟光标 */
-            white-space: nowrap; /* 防止文字换行 */
-            margin: 0 auto; /* 居中 */
-            letter-spacing: .15em; /* 增加字母间距 */
-            animation:
-                typing 3.5s steps(40, end),
-                blink-caret .75s step-end infinite;
+        .door-scene {
+            display: grid;
+            place-items: center;
+            padding: 32px;
+            background:
+                radial-gradient(circle at 50% 16%, rgba(255, 238, 192, 0.32), transparent 24%),
+                linear-gradient(180deg, #27323a 0%, #1a2025 58%, #111518 100%);
+        }
+
+        .door-scene::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 72px 72px;
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.85), transparent 88%);
+        }
+
+        .entry {
+            position: relative;
+            z-index: 1;
+            width: min(880px, 100%);
+            display: grid;
+            grid-template-columns: minmax(240px, 360px) 1fr;
+            gap: clamp(28px, 6vw, 70px);
+            align-items: center;
+        }
+
+        .door-wrap {
+            position: relative;
+            height: min(72vh, 580px);
+            min-height: 430px;
+            display: grid;
+            place-items: end center;
+            perspective: 1100px;
+        }
+
+        .door-frame {
+            width: 78%;
+            height: 88%;
+            padding: 18px;
+            border-radius: 12px 12px 4px 4px;
+            background: linear-gradient(90deg, #422719, #855635 18%, #4f2e1d 100%);
+            box-shadow: var(--shadow);
+        }
+
+        .door-button {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            cursor: pointer;
+            color: #fdf6ea;
+            text-align: left;
+            border-radius: 7px 7px 2px 2px;
+            background:
+                linear-gradient(90deg, rgba(255, 255, 255, 0.12), transparent 22%, rgba(0, 0, 0, 0.18) 100%),
+                repeating-linear-gradient(90deg, #8a552d 0 18%, #744420 18% 20%, #9a6237 20% 38%);
+            box-shadow: inset 0 0 0 7px rgba(64, 37, 22, 0.75);
+            transform-origin: left center;
+            transition: transform 720ms cubic-bezier(.2, .78, .22, 1), filter 300ms ease;
+        }
+
+        .door-button:hover,
+        .door-button:focus-visible {
+            transform: rotateY(-10deg);
+            filter: brightness(1.08);
+            outline: none;
+        }
+
+        .door-panel {
+            position: absolute;
+            inset: 15% 17%;
+            border: 3px solid rgba(69, 38, 20, 0.72);
+            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .door-knob {
+            position: absolute;
+            right: 18%;
+            top: 52%;
+            width: 22px;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 32%, #fff2ba, var(--gold) 54%, #6b421b);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        .door-label {
+            position: absolute;
+            left: 50%;
+            top: 24%;
+            translate: -50% 0;
+            width: 58%;
+            padding: 12px 14px;
+            border-radius: 6px;
+            text-align: center;
+            letter-spacing: 0;
+            color: #4d311e;
+            background: rgba(253, 246, 234, 0.86);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+        }
+
+        .entry-copy {
+            color: #f8efe1;
+        }
+
+        .entry-copy h1 {
+            margin: 0 0 16px;
+            font-size: clamp(2.4rem, 7vw, 5.8rem);
+            line-height: 0.98;
+            letter-spacing: 0;
+        }
+
+        .entry-copy p {
+            max-width: 520px;
+            margin: 0 0 26px;
+            color: rgba(248, 239, 225, 0.78);
+            font-size: clamp(1rem, 2vw, 1.22rem);
+            line-height: 1.8;
+        }
+
+        .enter-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 44px;
+            padding: 11px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.38);
+            border-radius: 999px;
+            color: #fff6e8;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .room-scene {
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 42%),
+                linear-gradient(160deg, var(--wall) 0 62%, var(--wall-dark) 62% 63%, #9b6a43 63% 100%);
+        }
+
+        .room-scene::before {
+            content: "";
+            position: absolute;
+            left: -10%;
+            right: -10%;
+            bottom: 0;
+            height: 34%;
+            background:
+                repeating-linear-gradient(96deg, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 72px),
+                linear-gradient(180deg, #b98053, #78492c);
+            transform: skewY(-2deg);
+            transform-origin: bottom left;
+        }
+
+        .room-inner {
+            position: relative;
+            z-index: 1;
+            width: min(1180px, calc(100% - 32px));
+            min-height: 100vh;
+            margin: 0 auto;
+            padding: 28px 0 52px;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 24px;
+        }
+
+        .room-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            padding: 12px 0;
+        }
+
+        .brand {
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .room-nav a {
+            color: var(--ink);
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 0.95rem;
+        }
+
+        .wall-area {
+            display: grid;
+            grid-template-columns: 0.9fr 1.35fr;
+            gap: clamp(28px, 5vw, 60px);
+            align-items: end;
+        }
+
+        .desk-zone {
+            min-height: 560px;
+            display: grid;
+            align-content: end;
+        }
+
+        .window {
+            width: min(280px, 80%);
+            aspect-ratio: 1.32;
+            margin: 0 auto 30px;
+            border: 12px solid #fff8ec;
+            border-radius: 6px;
+            background:
+                linear-gradient(90deg, transparent 48%, rgba(255, 255, 255, 0.9) 48% 52%, transparent 52%),
+                linear-gradient(180deg, transparent 48%, rgba(255, 255, 255, 0.9) 48% 52%, transparent 52%),
+                url("bg.jpg") center / cover;
+            box-shadow: 0 18px 35px rgba(86, 62, 42, 0.2);
+        }
+
+        .desk {
+            position: relative;
+            padding: 34px 22px 28px;
+            border-radius: 10px 10px 2px 2px;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 32%),
+                linear-gradient(90deg, #754424, #a56b3c 28%, #7a4729 100%);
+            box-shadow: 0 22px 34px rgba(73, 45, 27, 0.28);
+        }
+
+        .desk::before {
+            content: "";
+            position: absolute;
+            left: -18px;
+            right: -18px;
+            top: -18px;
+            height: 34px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #5b311c, #b87943 38%, #6f3d22);
+            box-shadow: 0 12px 24px rgba(65, 38, 23, 0.24);
+        }
+
+        .project-stack {
+            display: grid;
+            gap: 14px;
+        }
+
+        .project-card {
+            display: grid;
+            grid-template-columns: 86px 1fr;
+            gap: 14px;
+            align-items: center;
+            min-height: 116px;
+            padding: 12px;
+            border-radius: 8px;
+            color: var(--ink);
+            text-decoration: none;
+            background: rgba(255, 250, 240, 0.9);
+            box-shadow: 0 10px 18px rgba(59, 36, 22, 0.18);
+            transition: transform 220ms ease, box-shadow 220ms ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px) rotate(-0.5deg);
+            box-shadow: 0 16px 26px rgba(59, 36, 22, 0.24);
+        }
+
+        .project-card img {
+            width: 86px;
+            height: 86px;
+            object-fit: cover;
+            border-radius: 7px;
+            background: #fff;
+        }
+
+        .project-card strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1rem;
+        }
+
+        .project-card span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.45;
+        }
+
+        .gallery-zone {
+            align-self: stretch;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 18px;
+            min-height: 610px;
+        }
+
+        .profile-note {
+            width: min(620px, 100%);
+            padding: 18px 20px;
+            border-left: 5px solid var(--green);
+            background: rgba(255, 250, 240, 0.72);
+            box-shadow: 0 14px 30px rgba(93, 72, 48, 0.12);
+        }
+
+        .profile-note h2 {
+            margin: 0 0 8px;
+            font-size: clamp(1.55rem, 3vw, 2.4rem);
+            letter-spacing: 0;
+        }
+
+        .profile-note p {
+            margin: 0;
+            color: #4f585a;
+            line-height: 1.75;
+        }
+
+        .certificate-wall {
+            position: relative;
+            min-height: 430px;
+            border-radius: 4px;
+        }
+
+        .shelf {
+            position: absolute;
+            left: 2%;
+            right: 4%;
+            bottom: 4%;
+            height: 16px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #6d4329, #b17646 45%, #704129);
+            box-shadow: 0 12px 24px rgba(70, 43, 26, 0.22);
+        }
+
+        .frame {
+            position: absolute;
+            display: grid;
+            place-items: center;
+            padding: 10px;
+            border: 8px solid #7a5135;
+            border-radius: 6px;
+            background: #fffaf0;
+            box-shadow: 0 18px 28px rgba(78, 58, 39, 0.2);
+            transform: rotate(var(--tilt));
+        }
+
+        .frame img,
+        .frame-placeholder {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 3px;
+            background: linear-gradient(135deg, #fffdf8, #e7d7bd);
+        }
+
+        .frame-placeholder {
+            display: grid;
+            place-items: center;
+            padding: 14px;
+            text-align: center;
+            color: #78614b;
+            line-height: 1.5;
+            font-size: 0.92rem;
+        }
+
+        .frame:nth-child(1) {
+            --tilt: -2.5deg;
+            left: 2%;
+            top: 7%;
+            width: 30%;
+            height: 34%;
+        }
+
+        .frame:nth-child(2) {
+            --tilt: 1.8deg;
+            left: 37%;
+            top: 3%;
+            width: 25%;
+            height: 28%;
+            border-color: #476278;
+        }
+
+        .frame:nth-child(3) {
+            --tilt: -1deg;
+            right: 4%;
+            top: 11%;
+            width: 28%;
+            height: 37%;
+            border-color: #6a6f4d;
+        }
+
+        .frame:nth-child(4) {
+            --tilt: 2.2deg;
+            left: 17%;
+            top: 50%;
+            width: 27%;
+            height: 30%;
+            border-color: #9a6a38;
+        }
+
+        .frame:nth-child(5) {
+            --tilt: -1.8deg;
+            right: 18%;
+            top: 52%;
+            width: 31%;
+            height: 32%;
+        }
+
+        .photo-pin {
+            position: absolute;
+            right: 0;
+            bottom: 10%;
+            width: 185px;
+            padding: 10px;
+            border-radius: 7px;
+            background: #fffaf0;
+            box-shadow: 0 16px 28px rgba(72, 48, 30, 0.22);
+            transform: rotate(2deg);
+        }
+
+        .photo-pin img {
+            width: 100%;
+            display: block;
+            border-radius: 4px;
+        }
+
+        .contact-strip {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 18px;
+            border-radius: 8px;
+            color: #f9efe0;
+            background: rgba(31, 37, 40, 0.88);
+            box-shadow: 0 18px 36px rgba(31, 37, 40, 0.2);
+        }
+
+        .contact-strip a {
+            color: #f9efe0;
+        }
+
+        @media (max-width: 860px) {
+            .entry,
+            .wall-area {
+                grid-template-columns: 1fr;
+            }
+
+            .entry-copy {
+                text-align: center;
+            }
+
+            .entry-copy p {
+                margin-inline: auto;
+            }
+
+            .room-nav {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .room-nav a {
+                display: inline-block;
+                margin: 0 14px 8px 0;
+            }
+
+            .desk-zone,
+            .gallery-zone {
+                min-height: auto;
+            }
+
+            .certificate-wall {
+                min-height: 540px;
+            }
+
+            .photo-pin {
+                width: 150px;
+                right: 5%;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .door-scene {
+                padding: 20px;
+            }
+
+            .door-wrap {
+                min-height: 360px;
+                height: 52vh;
+            }
+
+            .room-inner {
+                width: min(100% - 22px, 1180px);
+                padding-top: 18px;
+            }
+
+            .project-card {
+                grid-template-columns: 72px 1fr;
+            }
+
+            .project-card img {
+                width: 72px;
+                height: 72px;
+            }
+
+            .certificate-wall {
+                min-height: 620px;
+            }
+
+            .frame:nth-child(n) {
+                left: auto;
+                right: auto;
+                width: 44%;
+                height: 22%;
+            }
+
+            .frame:nth-child(1) {
+                left: 1%;
+                top: 2%;
+            }
+
+            .frame:nth-child(2) {
+                right: 1%;
+                top: 8%;
+            }
+
+            .frame:nth-child(3) {
+                left: 5%;
+                top: 30%;
+            }
+
+            .frame:nth-child(4) {
+                right: 3%;
+                top: 37%;
+            }
+
+            .frame:nth-child(5) {
+                left: 24%;
+                top: 60%;
+            }
+
+            .photo-pin {
+                width: 132px;
+                bottom: 2%;
+            }
+
+            .contact-strip {
+                align-items: flex-start;
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 
-<body class="bg-gray-100">
-    <!-- 导航栏 -->
-    <nav class="bg-white shadow-md">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-gray-800">刘明方</h1>
-            <ul class="flex space-x-4">
-                <li><a href="#shouye" class="text-gray-600 hover:text-gray-800">首页</a></li>
-                <li><a href="#about-me" class="text-gray-600 hover:text-gray-800">关于我</a></li>
-                <li><a href="#zuopin" class="text-gray-600 hover:text-gray-800">作品</a></li>
-                <li><a href="#contact" class="text-gray-600 hover:text-gray-800">联系我</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- 英雄区域 -->
-    <section id="shouye" class="bg-hero-image text-white py-20 min-h-screen flex items-center">
-        <div class="max-w-full mx-auto px-4 text-center p-2">
-            <h2 class="text-8xl font-bold mb-2 -mt-20 typing-effect">你好，欢迎！</h2>
-            <p class="text-xl mb-8 text-gray-200">这里展示了我的一些经历、作品和想法。</p>
-            <a href="#about-me" class="bg-white text-blue-500 py-2 px-4 rounded-md hover:bg-gray-100">了解更多</a>
-        </div>
-    </section>
-
-    <!-- 关于我 -->
-    <section id="about-me" class="container mx-auto px-4 py-20">
-        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">关于我</h2>
-        <div class="flex flex-wrap justify-center items-center">
-            <div class="w-full md:w-1/2 mb-8 md:mb-0">
-                <img src="zhipai.jpg" alt="个人照片" class="mx-auto rounded-md shadow-md">
-            </div>
-            <div class="w-full md:w-1/2 px-4">
-                <p class="text-gray-600 leading-relaxed mb-4">你好，我叫刘明方！</p>
-                 <p class="text-gray-600 leading-relaxed mb-4">现就读于上海师范大学2022级人工智能专业。我有很强的动手实践能力，因为我觉得实践的过程我会收获很多理论知识得不到的经验，比如下面的作品1，通过微调llama3模型我切实感受到不同微调方式之间的区别。</p>
-                 <p class="text-gray-600 leading-relaxed mb-4">另外，我非常喜欢探索自己，为什么今天我状态活力满满？为什么我在这件事情上非常容易专注？怎么样保持深度工作？所以我常常会阅读这方面的书籍比如《原子习惯》、《深度工作》等</p>
-                <p class="text-gray-600 leading-relaxed">欲渡关山，何惧狂澜，风生水起，正好扬帆。</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 作品展示 -->
-    <section id="zuopin" class="bg-gray-200 py-20">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">我的作品</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-white rounded-md shadow-md p-6">
-                    <a href="your-work1-url.html" target="_blank">
-                        <img src="xiangmu1.png" alt="作品1" class="mb-4 rounded-md">
-                    </a>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">作品1</h3>
-                    <p class="text-gray-600 leading-relaxed">智愈萌友——抑郁症心理疏导宠物</p>
+<body>
+    <main>
+        <section id="door" class="door-scene" aria-label="主页入口">
+            <div class="entry">
+                <div class="door-wrap">
+                    <div class="door-frame">
+                        <button class="door-button" type="button" aria-label="进入刘明方的房间">
+                            <span class="door-panel"></span>
+                            <span class="door-label">刘明方的房间</span>
+                            <span class="door-knob"></span>
+                        </button>
+                    </div>
                 </div>
-                <div class="bg-white rounded-md shadow-md p-6">
-                    <a href="your-work2-url.html" target="_blank">
-                        <img src="xiangmu2.png" alt="作品2" class="mb-4 rounded-md">
-                    </a>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">作品2</h3>
-                    <p class="text-gray-600 leading-relaxed">一种基于动态注意力引导的多尺度特征融合面部情感识别方法</p>
-                </div>
-                <div class="bg-white rounded-md shadow-md p-6">
-                    <a href="your-work3-url.html" target="_blank">
-                        <img src="xiangmu3.png" alt="作品3" class="mb-4 rounded-md">
-                        <img src="xiangmu3-1.jpg" alt="作品3" class="mb-4 rounded-md">
-                    </a>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">作品3</h3>
-                    <p class="text-gray-600 leading-relaxed">凝眸——基于云边协同的输电线路覆冰检测系统</p>
+                <div class="entry-copy">
+                    <h1>你好，欢迎。</h1>
+                    <p>这是一间用来陈列经历、证书和项目的小房间。推开门后，可以在墙上看见荣誉记录，在桌上翻看我的作品。</p>
+                    <a class="enter-link" href="#room">进入房间</a>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 页脚 -->
-    <footer class="bg-gray-800 text-white py-8">
-        <div id="contact" class="container mx-auto px-4 text-center">
-            <p>邮箱：liumfang0113@gmail.com</p>
-        </div>
-    </footer>
+        <section id="room" class="room-scene" aria-label="个人主页房间">
+            <div class="room-inner">
+                <nav class="room-nav" aria-label="房间导航">
+                    <div class="brand">刘明方</div>
+                    <div>
+                        <a href="#certificates">照片墙</a>
+                        <a href="#projects">项目桌</a>
+                        <a href="#contact">联系我</a>
+                    </div>
+                </nav>
+
+                <div class="wall-area">
+                    <aside id="projects" class="desk-zone" aria-label="项目桌">
+                        <div class="window" aria-hidden="true"></div>
+                        <div class="desk">
+                            <div class="project-stack">
+                                <a class="project-card" href="#" aria-label="查看智愈萌友项目">
+                                    <img src="xiangmu1.png" alt="智愈萌友项目图片">
+                                    <span>
+                                        <strong>智愈萌友</strong>
+                                        <span>抑郁症心理疏导宠物，通过模型微调探索不同方案的实际差异。</span>
+                                    </span>
+                                </a>
+                                <a class="project-card" href="#" aria-label="查看面部情感识别项目">
+                                    <img src="xiangmu2.png" alt="面部情感识别项目图片">
+                                    <span>
+                                        <strong>面部情感识别</strong>
+                                        <span>基于动态注意力引导的多尺度特征融合方法。</span>
+                                    </span>
+                                </a>
+                                <a class="project-card" href="#" aria-label="查看凝眸项目">
+                                    <img src="xiangmu3.png" alt="凝眸项目图片">
+                                    <span>
+                                        <strong>凝眸</strong>
+                                        <span>基于云边协同的输电线路覆冰检测系统。</span>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <section class="gallery-zone" aria-label="照片墙和个人介绍">
+                        <div class="profile-note">
+                            <h2>关于我</h2>
+                            <p>上海师范大学 2022 级人工智能专业。喜欢把理论放进实践里验证，也持续探索专注、深度工作和自我成长。欲渡关山，何惧狂澜，风生水起，正好扬帆。</p>
+                        </div>
+
+                        <div id="certificates" class="certificate-wall">
+                            <article class="frame">
+                                <div class="frame-placeholder">证书照片 01<br>替换为你的获奖证书</div>
+                            </article>
+                            <article class="frame">
+                                <div class="frame-placeholder">证书照片 02<br>可以放竞赛、奖项或荣誉</div>
+                            </article>
+                            <article class="frame">
+                                <div class="frame-placeholder">证书照片 03<br>建议使用横向或竖向清晰图</div>
+                            </article>
+                            <article class="frame">
+                                <div class="frame-placeholder">证书照片 04<br>后续可继续增加相框</div>
+                            </article>
+                            <article class="frame">
+                                <div class="frame-placeholder">证书照片 05<br>统一放在墙面区域</div>
+                            </article>
+                            <div class="photo-pin">
+                                <img src="zhipai.jpg" alt="个人照片">
+                            </div>
+                            <div class="shelf" aria-hidden="true"></div>
+                        </div>
+                    </section>
+                </div>
+
+                <footer id="contact" class="contact-strip">
+                    <span>邮箱：<a href="mailto:liumfang0113@gmail.com">liumfang0113@gmail.com</a></span>
+                    <span>欢迎来到我的个人主页。</span>
+                </footer>
+            </div>
+        </section>
+    </main>
 
     <script>
-        // 这里可以添加更多的 JavaScript 交互代码
+        const doorButton = document.querySelector(".door-button");
+
+        doorButton.addEventListener("click", () => {
+            doorButton.style.transform = "rotateY(-72deg)";
+            window.setTimeout(() => {
+                document.querySelector("#room").scrollIntoView({ behavior: "smooth" });
+            }, 360);
+        });
     </script>
 </body>
 
